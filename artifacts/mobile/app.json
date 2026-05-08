@@ -16,7 +16,13 @@
     "ios": {
       "supportsTablet": false
     },
-    "android": {},
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#0F1115"
+      },
+      "package": "com.sistemavisitas.app"
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
