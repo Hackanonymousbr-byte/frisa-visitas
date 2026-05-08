@@ -323,22 +323,25 @@ export default function GerenciarScreen() {
   }, [clientes, mapsCustom, persist]);
 
   const removeCliente = useCallback((nome: string) => {
-    Alert.alert("Remover cliente", `Deseja remover "${nome}"?`, [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Remover",
-        style: "destructive",
-        onPress: () => {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-          persist(clientes.filter((c) => c !== nome));
-          AsyncStorage.getItem(STORAGE_VISITADOS).then((v) => {
-            if (!v) return;
-            const arr: string[] = JSON.parse(v).filter((c: string) => c !== nome);
-            AsyncStorage.setItem(STORAGE_VISITADOS, JSON.stringify(arr));
-          });
-        },
-      },
-    ]);
+    const doRemove = () => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      persist(clientes.filter((c) => c !== nome));
+      AsyncStorage.getItem(STORAGE_VISITADOS).then((v) => {
+        if (!v) return;
+        const arr: string[] = JSON.parse(v).filter((c: string) => c !== nome);
+        AsyncStorage.setItem(STORAGE_VISITADOS, JSON.stringify(arr));
+      });
+    };
+
+    if (Platform.OS === "web") {
+      // eslint-disable-next-line no-alert
+      if (window.confirm(`Deseja remover "${nome}"?`)) doRemove();
+    } else {
+      Alert.alert("Remover cliente", `Deseja remover "${nome}"?`, [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Remover", style: "destructive", onPress: doRemove },
+      ]);
+    }
   }, [clientes, persist]);
 
   const saveLocation = useCallback((cliente: string, address: string) => {
