@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
+import { router, useFocusEffect } from "expo-router";
 import React, {
   useCallback,
   useEffect,
@@ -415,19 +416,21 @@ export default function HomeScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editLocCliente, setEditLocCliente] = useState<string | null>(null);
 
-  useEffect(() => {
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_CLIENTES),
-      AsyncStorage.getItem(STORAGE_VISITADOS),
-      AsyncStorage.getItem(STORAGE_MAPS),
-      AsyncStorage.getItem(STORAGE_HISTORICO),
-    ]).then(([cl, vi, mp, hi]) => {
-      setClientes(cl ? JSON.parse(cl) : CLIENTES_INICIAIS);
-      if (vi) setVisitados(JSON.parse(vi));
-      if (mp) setMapsCustom(JSON.parse(mp));
-      if (hi) setHistorico(JSON.parse(hi));
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      Promise.all([
+        AsyncStorage.getItem(STORAGE_CLIENTES),
+        AsyncStorage.getItem(STORAGE_VISITADOS),
+        AsyncStorage.getItem(STORAGE_MAPS),
+        AsyncStorage.getItem(STORAGE_HISTORICO),
+      ]).then(([cl, vi, mp, hi]) => {
+        setClientes(cl ? JSON.parse(cl) : CLIENTES_INICIAIS);
+        if (vi) setVisitados(JSON.parse(vi));
+        if (mp) setMapsCustom(JSON.parse(mp));
+        if (hi) setHistorico(JSON.parse(hi));
+      });
+    }, [])
+  );
 
   const saveClientes = useCallback((next: string[]) => {
     setClientes(next);
@@ -559,6 +562,12 @@ export default function HomeScreen() {
                     Controle de rotas
                   </Text>
                 </View>
+                <Pressable
+                  onPress={() => router.push("/gerenciar")}
+                  style={[styles.gearBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                >
+                  <Feather name="settings" size={18} color={colors.mutedForeground} />
+                </Pressable>
                 <View style={[styles.progressBadge, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.progressPct, { color: colors.foreground }]}>{progresso}%</Text>
                   <Text style={[styles.progressLabel, { color: colors.mutedForeground }]}>concluído</Text>
@@ -685,6 +694,10 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: "row", alignItems: "flex-start", marginBottom: 20 },
   title: { fontSize: 34, fontFamily: "Inter_700Bold", letterSpacing: -0.5 },
   subtitle: { fontSize: 14, fontFamily: "Inter_400Regular", marginTop: 2 },
+  gearBtn: {
+    width: 44, height: 44, borderRadius: 14, borderWidth: 1,
+    alignItems: "center", justifyContent: "center", marginRight: 8,
+  },
   progressBadge: {
     borderRadius: 16, borderWidth: 1, paddingHorizontal: 16,
     paddingVertical: 10, alignItems: "center", minWidth: 90,

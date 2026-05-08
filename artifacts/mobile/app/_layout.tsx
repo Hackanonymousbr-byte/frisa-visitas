@@ -23,6 +23,7 @@ function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="gerenciar" options={{ animation: "slide_from_right" }} />
     </Stack>
   );
 }
