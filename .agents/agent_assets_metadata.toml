@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "QhSmhdYdJkNAR1beMYgXh"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "sistema_visitas_icon"

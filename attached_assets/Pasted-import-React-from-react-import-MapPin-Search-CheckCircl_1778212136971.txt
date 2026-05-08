@@ -1,0 +1,330 @@
+import React from "react";
+import {
+  MapPin,
+  Search,
+  CheckCircle2,
+  Clock3,
+  BarChart3,
+} from "lucide-react";
+
+export default function SistemaVisitas() {
+  const linksMaps = {
+    "Angatu Restaurante":
+      "https://www.google.com/maps/search/?api=1&query=Angatu+Restaurante+Vitoria+ES",
+
+    "Jamw Cafeteria":
+      "https://www.google.com/maps/search/?api=1&query=Jamw+Cafeteria+Vitoria+ES",
+
+    "Tokaki Marmitaria":
+      "https://www.google.com/maps/search/?api=1&query=Tokaki+Marmitaria+Vitoria+ES",
+
+    "Restaurante do Urso":
+      "https://www.google.com/maps/search/?api=1&query=Restaurante+do+Urso+Vitoria+ES",
+  };
+
+  const clientes = [
+    "Deilza Linfal",
+    "Edimilton Nunes",
+    "Edson Bonifacio",
+    "Jonatas Porto",
+    "Marina Maria",
+    "Rosiene Alves",
+    "Maria do Socorro",
+    "Gilda Vieira",
+    "Valdeir Ferreira",
+    "Schirley Moraes",
+    "A R Souza",
+    "Alessandra dos Santos",
+    "Angatu Restaurante",
+    "Bar e Restaurante Taube",
+    "Bartelie Gastro Lounge",
+    "Bob Grill",
+    "Capitão Gastrobar",
+    "Center Mobile",
+    "Comercial Gouveia",
+    "Empório do Mercado",
+    "Espeto Capixaba",
+    "Esquina 25",
+    "Focaccia Forno",
+    "Garapa Pastelaria",
+    "Hotel Sol e Mar",
+    "J de O de Vasconcelos",
+    "Jamw Cafeteria",
+    "José Roberto",
+    "Lauzir Gasparini",
+    "MS Padaria",
+    "Nosso Kilão",
+    "Padaria Delícias e Sabores",
+    "Padaria Maria Ortiz",
+    "Padaria Sevilha",
+    "Padaria Silvestre",
+    "Padarita Casa de Pães",
+    "Pão Francês Padaria",
+    "Reginaldo Araújo",
+    "Restaurante Brasileirinho",
+    "Restaurante do Urso",
+    "Restaurante Lá Tetê",
+    "Restaurante Quebra Nozes",
+    "Robson Oliveira",
+    "Santa Martha",
+    "SL Souza",
+    "Sociedade Comercial",
+    "Saudati Escolas",
+    "S V Pizzaria",
+    "TF Restaurante",
+    "Tokaki Marmitaria",
+    "V das G",
+    "Wanderson Rodrigues",
+  ];
+
+  const [visitados, setVisitados] = React.useState(() => {
+    const saved = localStorage.getItem("visitados");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [busca, setBusca] = React.useState("");
+
+  React.useEffect(() => {
+    localStorage.setItem("visitados", JSON.stringify(visitados));
+  }, [visitados]);
+
+  const toggleVisitado = (cliente) => {
+    setVisitados((prev) =>
+      prev.includes(cliente)
+        ? prev.filter((c) => c !== cliente)
+        : [...prev, cliente]
+    );
+  };
+
+  const clientesFiltrados = clientes.filter((cliente) =>
+    cliente.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  const progresso = Math.round(
+    (visitados.length / clientes.length) * 100
+  );
+
+  return (
+    <div className="min-h-screen bg-[#0F1115] text-white p-5 md:p-8">
+      <div className="max-w-7xl mx-auto">
+
+        {/* HEADER */}
+        <div className="bg-gradient-to-r from-zinc-900 to-zinc-800 rounded-[32px] p-8 shadow-2xl border border-zinc-700 mb-6">
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+            <div>
+              <h1 className="text-4xl font-black tracking-tight">
+                Sistema de Visitas
+              </h1>
+
+              <p className="text-zinc-400 mt-2 text-lg">
+                Controle inteligente de clientes e rotas
+              </p>
+            </div>
+
+            <div className="bg-black/40 backdrop-blur-md border border-zinc-700 rounded-3xl px-8 py-5 min-w-[180px]">
+
+              <div className="flex items-center gap-3 mb-2">
+                <BarChart3 size={20} />
+                <span className="text-zinc-300 text-sm">
+                  Progresso
+                </span>
+              </div>
+
+              <h2 className="text-5xl font-black">
+                {progresso}%
+              </h2>
+            </div>
+
+          </div>
+
+          {/* Progress */}
+          <div className="mt-8">
+            <div className="w-full h-5 bg-zinc-800 rounded-full overflow-hidden">
+
+              <div
+                className="h-5 bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-500 rounded-full"
+                style={{ width: `${progresso}%` }}
+              />
+
+            </div>
+          </div>
+
+        </div>
+
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-zinc-400 text-sm">
+                  Total Clientes
+                </p>
+
+                <h2 className="text-3xl font-bold mt-1">
+                  {clientes.length}
+                </h2>
+              </div>
+
+              <div className="bg-zinc-800 p-4 rounded-2xl">
+                <BarChart3 />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-zinc-400 text-sm">
+                  Visitados
+                </p>
+
+                <h2 className="text-3xl font-bold text-green-400 mt-1">
+                  {visitados.length}
+                </h2>
+              </div>
+
+              <div className="bg-green-500/10 p-4 rounded-2xl">
+                <CheckCircle2 className="text-green-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-zinc-400 text-sm">
+                  Pendentes
+                </p>
+
+                <h2 className="text-3xl font-bold text-yellow-400 mt-1">
+                  {clientes.length - visitados.length}
+                </h2>
+              </div>
+
+              <div className="bg-yellow-500/10 p-4 rounded-2xl">
+                <Clock3 className="text-yellow-400" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* SEARCH */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 mb-6">
+
+          <div className="flex items-center gap-3">
+            <Search className="text-zinc-500" />
+
+            <input
+              type="text"
+              placeholder="Buscar cliente..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="bg-transparent outline-none w-full text-lg placeholder:text-zinc-500"
+            />
+          </div>
+
+        </div>
+
+        {/* CLIENTES */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          {clientesFiltrados.map((cliente, index) => {
+            const checked = visitados.includes(cliente);
+
+            return (
+              <div
+                key={index}
+                onClick={() => toggleVisitado(cliente)}
+                className={`group rounded-3xl p-5 transition-all duration-300 cursor-pointer border backdrop-blur-md
+                ${
+                  checked
+                    ? "bg-green-500/10 border-green-500/30"
+                    : "bg-zinc-900 border-zinc-800 hover:border-zinc-600"
+                }`}
+              >
+
+                <div className="flex items-center justify-between gap-4">
+
+                  <div className="flex items-center gap-4 flex-1">
+
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg
+                      ${
+                        checked
+                          ? "bg-green-500 text-white"
+                          : "bg-zinc-800 text-zinc-300"
+                      }`}
+                    >
+                      {cliente.charAt(0)}
+                    </div>
+
+                    <div>
+                      <h2
+                        className={`font-bold text-lg transition-all
+                        ${
+                          checked
+                            ? "line-through text-zinc-500"
+                            : "text-white"
+                        }`}
+                      >
+                        {cliente}
+                      </h2>
+
+                      <p
+                        className={`text-sm mt-1
+                        ${
+                          checked
+                            ? "text-green-400"
+                            : "text-zinc-500"
+                        }`}
+                      >
+                        {checked
+                          ? "Cliente visitado"
+                          : "Aguardando visita"}
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <div className="flex items-center gap-3">
+
+                    <a
+                      href={
+                        linksMaps[cliente] ||
+                        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          cliente + " Vitória ES"
+                        )}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-2 bg-black hover:bg-zinc-800 px-4 py-3 rounded-2xl transition-all"
+                    >
+                      <MapPin size={18} />
+                      <span className="hidden md:block">
+                        Maps
+                      </span>
+                    </a>
+
+                    {checked && (
+                      <CheckCircle2 className="text-green-400" />
+                    )}
+
+                  </div>
+
+                </div>
+
+              </div>
+            );
+          })}
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
