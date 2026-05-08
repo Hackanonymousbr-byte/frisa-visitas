@@ -3,6 +3,7 @@ import * as Haptics from "expo-haptics";
 import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   FlatList,
   Linking,
   Platform,
@@ -265,6 +266,25 @@ export default function HomeScreen() {
     []
   );
 
+  const resetVisitas = useCallback(() => {
+    Alert.alert(
+      "Resetar visitas",
+      "Tem certeza? Todas as visitas do dia serão apagadas.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Resetar",
+          style: "destructive",
+          onPress: () => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            setVisitados([]);
+            AsyncStorage.removeItem(STORAGE_KEY);
+          },
+        },
+      ]
+    );
+  }, []);
+
   const openMaps = useCallback((cliente: string) => {
     const url =
       MAPS_LINKS[cliente] ||
@@ -379,23 +399,42 @@ export default function HomeScreen() {
                 </View>
               </View>
 
-              {/* Search */}
-              <View
-                style={[
-                  styles.searchBar,
-                  { backgroundColor: colors.card, borderColor: colors.border },
-                ]}
-              >
-                <Feather name="search" size={16} color={colors.mutedForeground} />
-                <TextInput
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  placeholder="Buscar cliente..."
-                  placeholderTextColor={colors.mutedForeground}
-                  value={busca}
-                  onChangeText={setBusca}
-                  clearButtonMode="while-editing"
-                  autoCorrect={false}
-                />
+              {/* Search + Reset */}
+              <View style={styles.searchRow}>
+                <View
+                  style={[
+                    styles.searchBar,
+                    { backgroundColor: colors.card, borderColor: colors.border, flex: 1 },
+                  ]}
+                >
+                  <Feather name="search" size={16} color={colors.mutedForeground} />
+                  <TextInput
+                    style={[styles.searchInput, { color: colors.foreground }]}
+                    placeholder="Buscar cliente..."
+                    placeholderTextColor={colors.mutedForeground}
+                    value={busca}
+                    onChangeText={setBusca}
+                    clearButtonMode="while-editing"
+                    autoCorrect={false}
+                  />
+                </View>
+
+                <Pressable
+                  onPress={resetVisitas}
+                  style={({ pressed }) => [
+                    styles.resetBtn,
+                    {
+                      backgroundColor: pressed
+                        ? "rgba(239,68,68,0.18)"
+                        : "rgba(239,68,68,0.1)",
+                      borderColor: "rgba(239,68,68,0.25)",
+                      opacity: visitadosCount === 0 ? 0.4 : 1,
+                    },
+                  ]}
+                  disabled={visitadosCount === 0}
+                >
+                  <Feather name="refresh-ccw" size={16} color="#ef4444" />
+                </Pressable>
               </View>
             </View>
           </>
@@ -490,6 +529,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "Inter_500Medium",
   },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 12,
+  },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -498,7 +543,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    marginBottom: 12,
+  },
+  resetBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchInput: {
     flex: 1,
