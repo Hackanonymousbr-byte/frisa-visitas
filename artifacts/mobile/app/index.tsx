@@ -40,15 +40,22 @@ const STORAGE_MAPS = "maps_custom_v1";
 const STORAGE_HISTORICO = "historico_v1";
 
 const MAPS_LINKS: Record<string, string> = {
-  "Angatu Restaurante":
-    "https://www.google.com/maps/search/?api=1&query=Angatu+Restaurante+Vitoria+ES",
-  "Jamw Cafeteria":
-    "https://www.google.com/maps/search/?api=1&query=Jamw+Cafeteria+Vitoria+ES",
-  "Tokaki Marmitaria":
-    "https://www.google.com/maps/search/?api=1&query=Tokaki+Marmitaria+Vitoria+ES",
-  "Restaurante do Urso":
-    "https://www.google.com/maps/search/?api=1&query=Restaurante+do+Urso+Vitoria+ES",
+  "Angatu Restaurante": "Angatu Restaurante Vitória ES",
+  "Jamw Cafeteria": "Jamw Cafeteria Vitória ES",
+  "Tokaki Marmitaria": "Tokaki Marmitaria Vitória ES",
+  "Restaurante do Urso": "Restaurante do Urso Vitória ES",
 };
+
+function buildWazeUrl(address: string): string {
+  const encoded = encodeURIComponent(address);
+  return `https://waze.com/ul?q=${encoded}&navigate=yes`;
+}
+
+async function openWaze(address: string) {
+  const wazeDeepLink = `waze://?q=${encodeURIComponent(address)}&navigate=yes`;
+  const canOpen = await Linking.canOpenURL(wazeDeepLink);
+  Linking.openURL(canOpen ? wazeDeepLink : buildWazeUrl(address));
+}
 
 const CLIENTES_INICIAIS = [
   "Deilza Linfal", "Edimilton Nunes", "Edson Bonifacio", "Jonatas Porto",
@@ -519,12 +526,11 @@ export default function HomeScreen() {
   }, [clientes]);
 
   const openMaps = useCallback((cliente: string) => {
-    const customAddress = mapsCustom[cliente];
-    const url = customAddress
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(customAddress)}`
-      : MAPS_LINKS[cliente] ||
-        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cliente + " Vitória ES")}`;
-    Linking.openURL(url);
+    const address =
+      mapsCustom[cliente] ||
+      MAPS_LINKS[cliente] ||
+      `${cliente} Vitória ES`;
+    openWaze(address);
   }, [mapsCustom]);
 
   const clientesFiltrados = useMemo(
