@@ -1,0 +1,25 @@
+workflows:
+  android-apk:
+    name: Android APK
+    max_build_duration: 60
+    environment:
+      node: 20.17.0
+      vars:
+        EXPO_NO_DOTENV: "1"
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm@10
+
+      - name: Install dependencies
+        script: pnpm install --no-frozen-lockfile
+
+      - name: Expo prebuild (Android)
+        working_directory: artifacts/mobile
+        script: npx expo prebuild --platform android --clean
+
+      - name: Build APK
+        working_directory: artifacts/mobile/android
+        script: ./gradlew assembleRelease
+
+    artifacts:
+      - artifacts/mobile/android/app/build/outputs/apk/release/*.apk
