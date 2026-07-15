@@ -551,11 +551,17 @@ export default function HomeScreen() {
   const currentAddress = editLocCliente ? (mapsCustom[editLocCliente] ?? "") : "";
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    >
       <FlatList
         data={clientesFiltrados}
         keyExtractor={(item) => item}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         contentContainerStyle={[styles.listContent, { paddingBottom: bottomPad + 100 }]}
         ListHeaderComponent={
           <>
@@ -688,7 +694,7 @@ export default function HomeScreen() {
         onClose={() => setEditLocCliente(null)}
         onSave={(address) => saveLocation(editLocCliente_, address)}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
