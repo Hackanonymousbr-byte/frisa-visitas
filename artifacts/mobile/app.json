@@ -21,7 +21,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#C0392B"
       },
-      "package": "com.sistemavisitas.app"
+      "package": "com.frisavisitas.app"
     },
     "web": {
       "favicon": "./assets/images/icon.png"

@@ -4,6 +4,9 @@
       "eas": {
         "projectId": "b364c5c9-6cf5-4c84-83d1-d90757404c34"
       }
+    },
+    "android": {
+      "package": "com.frisavisitas.app"
     }
   }
 }
